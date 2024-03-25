@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import DogGallery from './components/DogGallery';
 
@@ -7,6 +7,15 @@ const ACCESS_KEY = 'live_z1imqsHgVMISrvGkIopZ9wUgmNi9ED1U7OvEMXgdiGCeI4MN766JyvP
 function App() {
   const [dogAttributes, setDogAttributes] = useState([]);
   const [currentDogIndex, setCurrentDogIndex] = useState(0);
+  const [currentAttributes, setCurrentAttributes] = useState(null);
+  const [buttonClicked, setButtonClicked] = useState(false);
+
+  useEffect(() => {
+    if (buttonClicked) {
+      fetchRandomDogAttributes();
+      setButtonClicked(false); // Reset buttonClicked state
+    }
+  }, [buttonClicked]);
 
   const fetchRandomDogAttributes = () => {
     fetch('https://api.thedogapi.com/v1/images/search', {
@@ -25,11 +34,18 @@ function App() {
             imageUrl: dog.url || null
           }));
           setDogAttributes(prevAttributes => [...prevAttributes, ...newDogAttributes]);
+          setCurrentAttributes(newDogAttributes[0]); // Set current attributes to the first new dog
+          setCurrentDogIndex(prevIndex => prevIndex + newDogAttributes.length); // Update current index
         } else {
           console.error('No dog data found');
         }
       })
       .catch(error => console.error('Error fetching random dog attributes:', error));
+  };
+
+  const handleDogImageClick = (index) => {
+    setCurrentAttributes(dogAttributes[index]);
+    setCurrentDogIndex(index);
   };
 
   return (
@@ -38,18 +54,18 @@ function App() {
         <DogGallery
           dogAttributes={dogAttributes}
           currentDogIndex={currentDogIndex}
-          setCurrentDogIndex={setCurrentDogIndex}
+          handleDogImageClick={handleDogImageClick}
         />
       </div>
       <div className="attributes-section">
         <h1>Random Dog Attributes</h1>
-        <button onClick={fetchRandomDogAttributes}>Get Random Dog Attributes</button>
-        {dogAttributes.length > 0 && (
+        <button onClick={() => setButtonClicked(true)}>Get Random Dog Attributes</button>
+        {currentAttributes && (
           <div className="dog-attributes">
-            <p><strong>Breed:</strong> {dogAttributes[currentDogIndex].breed}</p>
-            <p><strong>Weight Range:</strong> {dogAttributes[currentDogIndex].weightRange}</p>
-            <p><strong>Country Origin:</strong> {dogAttributes[currentDogIndex].countryOrigin}</p>
-            <p><strong>Age Range:</strong> {dogAttributes[currentDogIndex].ageRange}</p>
+            <p><strong>Breed:</strong> {currentAttributes.breed}</p>
+            <p><strong>Weight Range:</strong> {currentAttributes.weightRange}</p>
+            <p><strong>Country Origin:</strong> {currentAttributes.countryOrigin}</p>
+            <p><strong>Age Range:</strong> {currentAttributes.ageRange}</p>
           </div>
         )}
       </div>
