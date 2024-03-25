@@ -27,7 +27,11 @@ The following **additional** features are implemented:
 * [ ] List anything else that you added to improve the site's functionality!
 
 ## Video Walkthrough
-![Screen Recording 2024-03-25 at 1 13 35 AM](https://github.com/r-oli-m/VeniVici/assets/99136190/67bb7b06-b616-4730-bdca-9d219aa0554e)
+
+
+https://github.com/r-oli-m/VeniVici/assets/99136190/0ebce173-2ca5-40e4-8084-11adaf0c0353
+
+
 
 ## Notes
 
